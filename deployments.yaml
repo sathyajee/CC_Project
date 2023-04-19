@@ -7,6 +7,7 @@ kind: Deployment
 metadata:
   name: mongo-app
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: mongo-app
@@ -18,6 +19,11 @@ spec:
       containers:
         - name: mongo-app
           image: mongo
+          ports:
+          - containerPort: 27017
+          volumeMounts:
+            - name: mongo-pv-storage
+              mountPath: /data/db
           env:
             - name: MONGO_INITDB_ROOT_USERNAME
               valueFrom:
@@ -29,6 +35,10 @@ spec:
                 secretKeyRef:
                   name: mongodb-secret
                   key: password
+      volumes:
+        - name: mongo-pv-storage
+          persistentVolumeClaim:
+            claimName: mongo-pv-claim
 ---
 # define the `Deployment` for mongo-express
 apiVersion: apps/v1
@@ -36,6 +46,7 @@ kind: Deployment
 metadata:
   name: mongo-express-app
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: mongo-express-app
@@ -46,7 +57,9 @@ spec:
     spec:
       containers:
         - name: mongo-express-app
-          image: mongo-express
+          image: pes1ug20cs686sathyajeeth/mongo-express:vi1
+          ports:
+            - containerPort: 8081
           env:
             - name: ME_CONFIG_MONGODB_ADMINUSERNAME
               valueFrom:
@@ -82,10 +95,10 @@ spec:
     spec:
       containers:
         - name: flask-app
-          image: flask-app-image
+          image: pes1ug20cs686sathyajeeth/python-flask:vi2
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 5000
+            - containerPort: 5001
           env:
             - name: MONGO_URI
               value: mongodb://mongodb-service:27017/blog
