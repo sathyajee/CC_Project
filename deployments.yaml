@@ -6,6 +6,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mongo-app
+  labels:
+    app: mongo-app
 spec:
   replicas: 1
   selector:
@@ -16,14 +18,12 @@ spec:
       labels:
         app: mongo-app
     spec:
+      terminationGracePeriodSeconds: 10
       containers:
         - name: mongo-app
           image: mongo
           ports:
           - containerPort: 27017
-          volumeMounts:
-            - name: mongo-pv-storage
-              mountPath: /data/db
           env:
             - name: MONGO_INITDB_ROOT_USERNAME
               valueFrom:
@@ -35,18 +35,16 @@ spec:
                 secretKeyRef:
                   name: mongodb-secret
                   key: password
-      volumes:
-        - name: mongo-pv-storage
-          persistentVolumeClaim:
-            claimName: mongo-pv-claim
 ---
 # define the `Deployment` for mongo-express
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mongo-express-app
+  labels:
+    app: mongo-express-app
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: mongo-express-app
@@ -57,7 +55,7 @@ spec:
     spec:
       containers:
         - name: mongo-express-app
-          image: pes1ug20cs686sathyajeeth/mongo-express:vi1
+          image: mongo-express
           ports:
             - containerPort: 8081
           env:
@@ -83,11 +81,13 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: flask-app
+  labels:
+    app: flask-app
 spec:
+  replicas: 2
   selector:
     matchLabels:
       app: flask-app
-  replicas: 1
   template:
     metadata:
       labels:
@@ -95,10 +95,7 @@ spec:
     spec:
       containers:
         - name: flask-app
-          image: pes1ug20cs686sathyajeeth/python-flask:vi2
-          imagePullPolicy: IfNotPresent
+          image: pes1ug20cs686sathyajeeth/python-flask:vi3
+          imagePullPolicy: Always
           ports:
             - containerPort: 5001
-          env:
-            - name: MONGO_URI
-              value: mongodb://mongodb-service:27017/blog
