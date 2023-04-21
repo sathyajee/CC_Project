@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 from datetime import datetime
+import subprocess
 
 app = Flask(__name__)
 
@@ -16,6 +17,11 @@ db = MongoClient(conn_string).blog
 @app.route('/')
 def home():
     posts = list(db.posts.find({}))
+    if(len(posts)==0):
+        subprocess.call("run.py", shell=True)
+        db.posts.insert_one({"title": "Making Sense of Cents", "author": "Finance Blogs", "createdAt": datetime.now()})
+        db.posts.insert_one({"title": "Learn what school and church never taught you about money", "author": "Bob Lotich", "createdAt": datetime.now()})
+        db.posts.insert_one({"title": "We Are All Overwhelmed. Here's How to Feel More in Control...", "author": "Sathyajeeth", "createdAt": datetime.now()})
     return render_template("home.html", homeIsActive=True, createPostIsActive=False, posts=posts)
 
 @app.route('/create-post', methods=["GET", "POST"])

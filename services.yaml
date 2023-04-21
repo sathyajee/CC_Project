@@ -8,24 +8,24 @@ metadata:
   name: mongodb-service
 spec:
   selector:
-    app: mongo-app
+    app: mongodb
   ports:
     - protocol: TCP
       port: 27017
       targetPort: 27017
-
 ---
 # define a service for mongo-express
 # set the type to LoadBalancer and configure the ports
 # don't forget to specify a nodePort as well! a nodePort exposes the pod to applications outside the cluster. this will allow you to access the frontend admin interface from your host system
+
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongo-express-service
+  name: mongo-express
 spec:
-  type: LoadBalancer
   selector:
-    app: mongo-express-app
+    app: mongo-express
+  type: LoadBalancer
   ports:
     - protocol: TCP
       port: 8081
@@ -38,13 +38,15 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: flask-app-service
+  name: flaskapi
 spec:
-  selector:
-    app: flask-app
   ports:
-    - protocol: TCP
-      port: 5001
-      targetPort: 5001
-      nodePort: 30000
+  - port: 5001
+    protocol: TCP
+    targetPort: 5001
+  selector:
+    app: flaskapi
   type: LoadBalancer
+
+# contain permanent ip address that can be attached for each pod
+# Also act as load balancer

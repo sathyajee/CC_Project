@@ -5,59 +5,60 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mongo-app
+  name: mongodb
+  labels:
+    app: mongodb
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mongo-app
+      app: mongodb
   template:
     metadata:
       labels:
-        app: mongo-app
+        app: mongodb
     spec:
+      terminationGracePeriodSeconds: 10
       containers:
-        - name: mongo-app
+        - name: mongodb
           image: mongo
+          imagePullPolicy: Always 
           ports:
-          - containerPort: 27017
-          volumeMounts:
-            - name: mongo-pv-storage
-              mountPath: /data/db
+            - containerPort: 27017
           env:
             - name: MONGO_INITDB_ROOT_USERNAME
               valueFrom:
                 secretKeyRef:
                   name: mongodb-secret
-                  key: username
+                  key: mongo-root-username
             - name: MONGO_INITDB_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: mongodb-secret
-                  key: password
-      volumes:
-        - name: mongo-pv-storage
-          persistentVolumeClaim:
-            claimName: mongo-pv-claim
+                  key: mongo-root-password
+
+
 ---
 # define the `Deployment` for mongo-express
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mongo-express-app
+  name: mongo-express
+  labels:
+    app: mongo-express
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
-      app: mongo-express-app
+      app: mongo-express
   template:
     metadata:
       labels:
-        app: mongo-express-app
+        app: mongo-express
     spec:
       containers:
-        - name: mongo-express-app
-          image: pes1ug20cs686sathyajeeth/mongo-express:vi1
+        - name: mongo-express
+          image: mongo-express
           ports:
             - containerPort: 8081
           env:
@@ -65,40 +66,41 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: mongodb-secret
-                  key: username
+                  key: mongo-root-username
             - name: ME_CONFIG_MONGODB_ADMINPASSWORD
               valueFrom:
                 secretKeyRef:
                   name: mongodb-secret
-                  key: password
+                  key: mongo-root-password
             - name: ME_CONFIG_MONGODB_SERVER
               valueFrom:
                 configMapKeyRef:
                   name: mongodb-configmap
-                  key: url
+                  key: database_url
 ---
 # define the `Deployment` for flask-app
 # set ImagePullPolicy to 'Never' to allow the use of the locally built image
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: flask-app
+  name: flaskapi
+  labels:
+    app: flaskapi
 spec:
+  replicas: 2
   selector:
     matchLabels:
-      app: flask-app
-  replicas: 1
+      app: flaskapi
   template:
     metadata:
       labels:
-        app: flask-app
+        app: flaskapi
     spec:
       containers:
-        - name: flask-app
-          image: pes1ug20cs686sathyajeeth/python-flask:vi2
-          imagePullPolicy: IfNotPresent
+        - name: flaskapi
+          image: pes1ug20cs686sathyajeeth/python-flask:vi3
+          imagePullPolicy: Always
           ports:
             - containerPort: 5001
-          env:
-            - name: MONGO_URI
-              value: mongodb://mongodb-service:27017/blog
+# abstraction of pods
+# used to replicate
