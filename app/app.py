@@ -75,6 +75,15 @@ def deletePost():
     # redirect to home page
     return redirect("/")
 
+@app.route('/viewBlog', methods=['GET'])
+def viewPost():
+
+    postId = request.args.get('form')
+
+    post = dict(db.posts.find_one({"_id":ObjectId(postId)}))
+
+    return render_template('Post.html', post=post)
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port="5001", debug=True)

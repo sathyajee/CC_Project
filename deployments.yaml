@@ -98,9 +98,7 @@ spec:
     spec:
       containers:
         - name: flaskapi
-          image: pes1ug20cs686sathyajeeth/python-flask:vi3
+          image: pes1ug20cs686sathyajeeth/python-flask:vi4
           imagePullPolicy: Always
           ports:
             - containerPort: 5001
-# abstraction of pods
-# used to replicate
