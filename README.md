@@ -73,4 +73,3 @@ Login to the mongo shell and -
 1. Create a Database
 2. Insert a Collection
 3. Fill it with records
-
