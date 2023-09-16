@@ -7,8 +7,8 @@ Docker and Kubernetes are almost synonymous to 'microservices' as they help pack
 The microservices architecture will deploy a Kubernetes cluster with a mongodb server pod fronted with a web admin interface and a pod to run the flask app.
 
 ## Pre-Requisites/ Pre-Installation:
-1. Docker ([Windows](https://docs.docker.com/desktop/windows/install/) | [Ubuntu](https://docs.docker.com/engine/install/ubuntu/#:~:text=Install%20from%20a%20package&text=Go%20to%20https%3A%2F%2Fdownload,version%20you%20want%20to%20install) | [MacOS](https://docs.docker.com/desktop/mac/install/))
-2. Kubernetes ([Windows](https://birthday.play-with-docker.com/kubernetes-docker-desktop/) | [Ubuntu](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) | [MacOS](https://birthday.play-with-docker.com/kubernetes-docker-desktop/))
+1. Docker 
+2. Kubernetes 
 
 ## File Structure
 ```
@@ -73,7 +73,3 @@ Login to the mongo shell and -
 1. Create a Database
 2. Insert a Collection
 3. Fill it with records
-
-Feel free to play around for brownie points!
-
-## All Done! :)
