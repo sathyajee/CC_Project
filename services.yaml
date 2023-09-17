@@ -44,9 +44,9 @@ spec:
   - port: 5001
     protocol: TCP
     targetPort: 5001
+    nodePort: 30056
   selector:
     app: flaskapi
   type: LoadBalancer
 
-# contain permanent ip address that can be attached for each pod
-# Also act as load balancer
+

@@ -6,13 +6,7 @@ import subprocess
 
 app = Flask(__name__)
 
-user = 'MyUser'           # username as set for the mongodb admin server (the username used in secret.yaml - before base64 conversion)
-password = 'qwerty'       # password as set for the mongodb admin server (the password used in secret.yaml - before base64 conversion)
-host = 'mongodb-service'    # service name of the mongodb admin server as set in the service for mongodb server
-port = '27017'              # port number of the mongodb admin server as set in the service for mongodb server
-conn_string = f'mongodb://{user}:{password}@{host}:{port}'
-
-db = MongoClient(conn_string).blog
+db = MongoClient("mongodb://localhost:27017").Project2
 
 @app.route('/')
 def home():
@@ -75,6 +69,15 @@ def deletePost():
     # redirect to home page
     return redirect("/")
 
+@app.route('/viewBlog', methods=['GET'])
+def viewPost():
+
+    postId = request.args.get('form')
+
+    post = dict(db.posts.find_one({"_id":ObjectId(postId)}))
+
+    return render_template('Post.html', post=post)
+    
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port="5001", debug=True)
+    app.run(host="0.0.0.0", port="5003", debug=True)
